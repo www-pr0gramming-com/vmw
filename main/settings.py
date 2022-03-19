@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # fontawesomefree
     "fontawesomefree",
     "user",
+    "content",
 ]
 
 
