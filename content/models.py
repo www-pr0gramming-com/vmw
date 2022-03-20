@@ -22,6 +22,10 @@ class Video(models.Model):
     title = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     description = models.TextField()
+    order = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ["order"]
 
     def __str__(self):
         return self.title
