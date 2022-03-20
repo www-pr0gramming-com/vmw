@@ -46,6 +46,12 @@
                             </a>
                         </li>
 
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'content:course-list' %}">Course
+                                <span class="visually-hidden">(current)</span>
+                            </a>
+                        </li>
+
 
                         {% if not request.user.is_authenticated %}
                         <li class="nav-item">
