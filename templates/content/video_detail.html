@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>
-    course detail
+    video detail
 </h1>
 
 
@@ -17,14 +17,15 @@
 
             <div class="col-6">
 
-
                 <div class="card shadow-sm">
 
-                    <img class="bd-placeholder-img card-img-top" width="100%" height="270"
-                        src="{{ object.thumbnail.url }}" alt="{{ object.name }}">
+                    {% comment %} <img class="bd-placeholder-img card-img-top" width="100%" height="270"
+                        src="{{ object.thumbnail.url }}" alt="{{ object.name }}"> {% endcomment %}
 
                     <div class="card-body">
-                        <p class="card-text">{{ object.name }}</p>
+                        <p class="card-text">{{ object.vimeo_id }}</p>
+                        <p class="card-text">{{ object.title }}</p>
+                        <p class="card-text">{{ object.description }}</p>
 
                     </div>
                 </div>
@@ -33,7 +34,7 @@
 
                 <h2>Videos</h2>
 
-                {% for video in object.videos.all %}
+                {% for video in object.course.videos.all %}
                 <p>
                     <a href="{{ video.get_absolute_url }}">
                         {{ video.title }}
@@ -51,9 +52,7 @@
 
         </div>
 
-
     </div>
-
 
 </div>
 

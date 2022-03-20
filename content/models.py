@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 from django.db.models.signals import pre_save
 
@@ -11,6 +12,9 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("content:course-detail", kwargs={"slug": self.slug})
+
 
 class Video(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="videos")
@@ -21,6 +25,9 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("content:video-detail", kwargs={"slug": self.slug})
 
 
 def pre_save_course(sender, instance, *args, **kwargs):
