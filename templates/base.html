@@ -52,6 +52,13 @@
                             </a>
                         </li>
 
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'payment:enroll' %}">Enroll
+                                <span class="visually-hidden">(current)</span>
+                            </a>
+                        </li>
+
+
 
                         {% if not request.user.is_authenticated %}
                         <li class="nav-item">

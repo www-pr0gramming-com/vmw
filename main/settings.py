@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "user",
     "content",
+    "payment",
 ]
 
 
