@@ -78,10 +78,42 @@ class CreateCheckoutSessionView(LoginRequiredMixin, generic.View):
                 mode="subscription",
                 success_url=domain + reverse("content:course-list"),
                 cancel_url=domain + reverse("content:course-list"),
-                metadata={},
+                metadata={
+                    "price": pricing.stripe_price_id,
+                },
                 subscription_data=trial_period,
             )
         except Exception as e:
             return str(e)
 
         return redirect(checkout_session.url, code=303)
+
+
+class ChangeSubscriptionView(LoginRequiredMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        if not self.request.user.subscription.stripe_subscription_id:
+            return redirect("content:course-list")
+        else:
+            subscription_id = self.request.user.subscription.stripe_subscription_id
+            subscription = stripe.Subscription.retrieve(subscription_id)
+        #######################################################
+        pricing = Pricing.objects.get(id=self.kwargs["pk"])
+        #######################################################
+        try:
+            stripe.Subscription.modify(
+                subscription_id,
+                cancel_at_period_end=False,
+                proration_behavior="always_invoice",
+                items=[
+                    {
+                        "id": subscription["items"]["data"][0].id,
+                        "price": pricing.stripe_price_id,
+                    }
+                ],
+            )
+            messages.success(self.request, "thank you, payment is successful")
+            return redirect("content:course-list")
+
+        except Exception as e:
+            messages.error(self.request, f"{e}")
+            return redirect("content:course-list")

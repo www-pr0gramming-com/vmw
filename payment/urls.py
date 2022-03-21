@@ -11,4 +11,9 @@ urlpatterns = [
         views.CreateCheckoutSessionView.as_view(),
         name="create-checkout-session",
     ),
+    path(
+        "update-payment/<pk>/",
+        views.ChangeSubscriptionView.as_view(),
+        name="update-payment",
+    ),
 ]

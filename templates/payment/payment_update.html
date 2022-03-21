@@ -1,10 +1,32 @@
 {% extends "base.html" %}
 
-{% block javascript %}
-{% endblock javascript %}
-
 
 {% block content %}
+
+<div class="container my-5 py-5">
+
+    <h1>Stripe Payment Update</h1>
+
+    <hr>
+
+    <div class="card">
+        <div class="card-header">
+            {{ pricing.name }} - &yen;{{ pricing.price }}
+        </div>
+
+        <div class="card-body">
+
+            <form action="{% url 'payment:update-payment' pricing.pk %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" id="checkout-button">Update</button>
+            </form>
+
+
+        </div>
+    </div>
+
+
+</div>
 
 
 
