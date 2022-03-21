@@ -68,7 +68,7 @@ class CreateCheckoutSessionView(LoginRequiredMixin, generic.View):
         ####################################################
         if pricing.name == "normal":
             trial_period = {
-                "trial_period_days": 7,
+                "trial_period_days": 1,
             }
         else:
             trial_period = None
@@ -154,6 +154,17 @@ def webhook(request, *args, **kwargs):
             print("Subscription trial will end")
         elif event_type == "customer.subscription.created":
             print("Subscription created %s", event.id)
+
+            stripe_customer_id = data_object["customer"]
+            stripe_price_id = data_object["items"]["data"][0]["plan"]["id"]
+            pricing = Pricing.objects.get(stripe_price_id=stripe_price_id)
+
+            user = User.objects.get(stripe_customer_id=stripe_customer_id)
+            user.subscription.status = data_object["status"]
+            user.subscription.stripe_subscription_id = data_object["id"]
+            user.subscription.pricing = pricing
+            user.subscription.save()
+
         elif event_type == "customer.subscription.updated":
             print("Subscription created %s", event.id)
 

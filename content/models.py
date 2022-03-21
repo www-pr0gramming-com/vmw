@@ -11,6 +11,12 @@ User = get_user_model()
 from allauth.account.signals import email_confirmed
 
 
+from django.contrib.auth.signals import user_logged_in
+import stripe
+
+stripe.api_key = "sk_test_51JuBBUBQiGyA5MbMg18MgW2S3r5Cmnie1B8gPp5sMBcPySHEIVTwx4LeTeKHEz9FHAKrT7wLWaU6zWeZQJq1dAy200d52eeXkb"
+
+
 class Pricing(models.Model):
     name = models.CharField(max_length=100, unique=True)  # basic pro master
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -91,7 +97,21 @@ def post_email_confirmed(request, email_address, *args, **kwargs):
     subscription.save()
 
 
+def user_logged_in_receiver(sender, user, **kwargs):
+    if user.subscription.stripe_subscription_id:
+        sub = stripe.Subscription.retrieve(user.subscription.stripe_subscription_id)
+        # print(sub)
+
+        stripe_price_id = sub["items"]["data"][0]["plan"]["id"]
+        pricing = Pricing.objects.get(stripe_price_id=stripe_price_id)
+
+        user.subscription.status = sub["status"]
+        user.subscription.pricing = pricing
+        user.subscription.save()
+
+
 pre_save.connect(pre_save_course, sender=Course)
 pre_save.connect(pre_save_video, sender=Video)
 pre_save.connect(pre_save_pricing, sender=Pricing)
 email_confirmed.connect(post_email_confirmed)
+user_logged_in.connect(user_logged_in_receiver)
