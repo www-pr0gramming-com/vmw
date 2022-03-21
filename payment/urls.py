@@ -17,4 +17,9 @@ urlpatterns = [
         name="update-payment",
     ),
     path("webhook/", views.webhook),
+    path(
+        "subscription/cancel/",
+        views.CancelSubscriptionView.as_view(),
+        name="cancel-subscription",
+    ),
 ]

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+
+            <a href="{% url 'content:course-list' %}">Back to course</a>
+            <hr />
+            <h2>Pricing plan: {{ request.user.subscription.pricing.name }}</h2>
+            <h3>Status: {{ request.user.subscription.status }}</h3>
+            <hr />
+            <h4>Cancel Subscription</h4>
+            <form method="POST" action=".">
+                {% csrf_token %}
+                {{ form }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-danger mb-3" type="submit">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

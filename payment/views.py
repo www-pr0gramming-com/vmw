@@ -19,6 +19,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+from .forms import CancelSubscriptionForm
+
 
 class EnrollView(generic.ListView):
     queryset = Pricing.objects.all()
@@ -167,9 +169,41 @@ def webhook(request, *args, **kwargs):
 
         elif event_type == "customer.subscription.deleted":
             print("Subscription canceled: %s", event.id)
+            stripe_customer_id = data_object["customer"]
+            user = User.objects.get(stripe_customer_id=stripe_customer_id)
+
+            user.subscription.status = None
+            user.subscription.stripe_subscription_id = None
+            user.subscription.pricing = None
+            user.subscription.save()
 
         else:
             # Unexpected event type
             return HttpResponse(status=400)
 
         return HttpResponse()
+
+
+class CancelSubscriptionView(LoginRequiredMixin, generic.FormView):
+    form_class = CancelSubscriptionForm
+    template_name = "payment/payment_cancel.html"
+
+    def get_success_url(self):
+        return reverse("content:course-list")
+
+    def form_valid(self, form):
+        if not self.request.user.subscription.stripe_subscription_id:
+            messages.success(self.request, "no subscription")
+            return redirect("content:course-list")
+
+        stripe.Subscription.delete(
+            self.request.user.subscription.stripe_subscription_id,
+        )
+
+        # stripe.Subscription.modify(
+        #     "sub_49ty4767H20z6a",
+        #     cancel_at_period_end=True,
+        # )
+
+        messages.success(self.request, "cancell your subscription")
+        return super().form_valid(form)
