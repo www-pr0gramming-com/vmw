@@ -19,6 +19,8 @@
 
                 <div class="card shadow-sm">
 
+                    {% if has_permission %}
+
                     <div class="w-full">
                         <div data-vimeo-initialized="true">
                             <div style="padding:56.25% 0 0 0;position:relative;">
@@ -29,6 +31,16 @@
                             </div>
                         </div>
                     </div>
+
+                    {% else %}
+
+                    <div class="w-full">
+
+                        <h2 class="m-3">No permission</h2>
+
+                    </div>
+
+                    {% endif %}
 
                     <div class="card-body">
 
