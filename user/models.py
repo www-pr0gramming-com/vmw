@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     first_name = None
     last_name = None
     email = models.EmailField(_("email address"), unique=True)
+    stripe_customer_id = models.CharField(max_length=50, null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

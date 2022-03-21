@@ -11,13 +11,14 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     list_display = (
         "email",
+        "stripe_customer_id",
         "is_active",
         "is_staff",
         "is_superuser",
     )
 
     fieldsets = (
-        ("Main", {"fields": ("email",)}),
+        ("Main", {"fields": ("email", "stripe_customer_id")}),
         # ("Personal info", {"fields": ("first_name", "last_name")}),
         (
             "Permissions",
